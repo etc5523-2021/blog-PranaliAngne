@@ -6,7 +6,7 @@ description: |
   cheers!
 author:
   - name: Pranali Angne 
-    url:  https://festive-noether-2e1553.netlify.app/
+    url: running-blogs-by-pranaliangne.netlify.app
     affiliation: Monash University
     affiliation_url: https://www.monash.edu
 date: "2021-08-31"

@@ -2,7 +2,7 @@
 
 
 This is the blog of Pranali Angne.
-The URL of this blog is running-blogs-by-pranaliangne.netlify.app
+The URL of this blog is https://running-blogs-by-pranaliangne.netlify.app
 
 ## Blog Post 1
 

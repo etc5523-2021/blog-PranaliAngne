@@ -67,7 +67,7 @@ Variable_Description <- data.frame(Variables = names(new_bangla),
                                           "Month"
                                           ))
 
-DT::datatable(Variable_Description, options = list(pageLength = 4))
+DT::datatable(Variable_Description, options = list(pageLength = 4), caption = 'Table 1: Variable description ')
 
 ```
 
@@ -107,7 +107,9 @@ SD <-c(round(sd(Summary_statistics$total_cases),2),
 
 statistical_description <- data.frame(Variables, Max.Value, Min.Value, Mean, SD)
 
-DT::datatable(statistical_description, options = list(pageLength = 4))
+DT::datatable(statistical_description, options = list(pageLength = 4), caption = 'Table 2: Descriptive Summary Statistics')
+
+
 
 ```
 
@@ -169,7 +171,7 @@ corr
 
 
 
-# A graphical representation of the above table for a clear view
+# A graphical representation of the above table for a detailed story
 ```{r}
 
 cor1 <- bangladesh %>% 
@@ -184,7 +186,8 @@ cor1 <- bangladesh %>%
   theme_get()+
   scale_x_continuous(labels = scales::comma) +
   geom_smooth(method = "lm") +
-  geom_point(alpha = 0.4)
+  geom_point(alpha = 0.4)+
+   ggtitle("Correlation between  New cases and Total vaccination")
   
 ```
 
