@@ -1,0 +1,208 @@
+---
+title: "Coronavirus(COVID-19): Bangladesh"
+description: "Bangladesh: Bangladesh Responsive COVID-19 Vaccines for Recovery"
+author:
+  - name: Pranali Angne
+date: "`r Sys.Date()`"
+output:
+  distill::distill_article:
+    toc: true
+   
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(readr)
+library(here)
+library(tidyverse)
+library(gt)
+library(DT)
+library(sparkline)
+library(formattable)
+library(ggplot2)
+library(ggpubr)
+```
+
+
+# Introduction
+A dangerous, life-threatening virus named COVID-19 started spreading in December 2019 enters Bangladesh on 08th March 2020. From various news and information, it is clear that COVID-19 enters Bangladesh from tourists from various countries and immigrants who lived in other countries to do their jobs.
+
+The transmission rate of COVID-19 then started increasing day by day and its repercussion had to face many unexpected circumstances in various sectors like economic, educational, industrial, political and regular life of citizens. This weblog focuses on understanding Correlation between  **New cases** and **Total vaccination** in Bangladesh. 
+
+
+```{r, echo = F, out.width = '50%', fig.pos="center"}
+knitr::include_graphics("images/map.jpg")
+```
+
+
+
+
+```{r reading-data}
+# Data-set 1
+covid_data <- read_csv("data/covid-data.csv")
+
+#Filtering
+bangladesh <- subset(covid_data, location =='Bangladesh') %>% 
+  mutate(Year = format(date, "%Y"), Month = format(date, "%m"))
+
+```
+
+
+# Variable description
+```{r}
+new_bangla <- subset(covid_data, location=='Bangladesh') %>% 
+  select( date, total_cases, total_deaths, total_tests, total_vaccinations, new_cases) %>% 
+  mutate(Year = format(date, "%Y"), Month = format(date, "%m")) %>% na.omit %>% 
+  select(new_cases, total_cases, total_deaths, total_tests, total_vaccinations, Year, Month)
+
+
+Variable_Description <- data.frame(Variables = names(new_bangla),
+                          Description = c("New cases",
+                                          "Total cases",
+                                          "Total deaths",
+                                          "Total tests",
+                                          "Total vaccinations",
+                                          "Year",
+                                          "Month"
+                                          ))
+
+DT::datatable(Variable_Description, options = list(pageLength = 4))
+
+```
+
++ The data-set is an *R Built-in Data set* which is being used for constructing this analysis. It is a very large data set name "covid_data" providing all countries information out of which Bangladesh was filtered. 
+
++ There are total 545 observations and 62 columns in the data set consists of years 2020 and 2021. Out of these 62 variables "Total cases", "Total deaths", "Total tests", "Total vaccinations", "Year", "Month", "New cases" were use to show the analysis. 
+
+
+# Descriptive Summary Statistics
+```{r}
+
+Summary_statistics <- bangladesh %>% 
+  select(total_cases, total_deaths, total_tests, total_vaccinations) %>% 
+  na.omit()
+
+Variables <- c("Total cases", "Total deaths", "Total tests", "Total vaccinations")
+
+Min.Value <- c(min(Summary_statistics$total_cases), 
+           min(Summary_statistics$total_deaths),
+           min(Summary_statistics$total_tests),
+           min(Summary_statistics$total_vaccinations))
+
+Max.Value <- c(max(Summary_statistics$total_cases), 
+           max(Summary_statistics$total_deaths),
+           max(Summary_statistics$total_tests),
+           max(Summary_statistics$total_vaccinations))
+
+Mean <- c(round(mean(Summary_statistics$total_cases),2), 
+           round(mean(Summary_statistics$total_deaths),2),
+           round(mean(Summary_statistics$total_tests),2),
+           round(mean(Summary_statistics$total_vaccinations),2))
+
+SD <-c(round(sd(Summary_statistics$total_cases),2), 
+           round(sd(Summary_statistics$total_deaths),2),
+           round(sd(Summary_statistics$total_tests),2),
+           round(sd(Summary_statistics$total_vaccinations),2))
+
+statistical_description <- data.frame(Variables, Max.Value, Min.Value, Mean, SD)
+
+DT::datatable(statistical_description, options = list(pageLength = 4))
+
+```
+
++ All the variables in the table above show a very high "mean" and "standard deviation". Higher the mean explains that there is too much of variation and high sd indicates that the data are spread out over a large range of values. (This result has been obtained after removing the NA values)
+
+
+# Analysis: 
+```{r}
+TRY <- bangladesh %>% 
+  select(total_deaths, Month, Year, total_cases, new_cases) %>% 
+  na.omit() %>% 
+  group_by(Month, Year) %>% 
+  mutate(recovery = (total_cases - total_deaths),
+         ) %>% 
+  select(recovery, Month, Year, new_cases, total_cases) %>% 
+  group_by(Month, Year) %>% 
+  summarise(`New cases` = sum(new_cases),
+            `Total cases` = sum(total_cases),
+             Recover = sum(recovery),
+             Recovery = spk_chr(recovery, type = "line")) %>% 
+ datatable(escape = FALSE,
+            options = list(fnDrawCallback = htmlwidgets::JS('function(){HTMLWidgets.staticRender();}'))) %>% 
+  spk_add_deps()
+
+TRY
+  
+```
+
++ It shows a linear relation between Total tests and Total recovery for the years 2020 and 2021. Recovery has been derived from taking out the difference between total cases and total deaths
+
++ Comparing the years 2020 and 2021, it has been observed that for the year 2020 initially the new cases were low and recovery count is fairly good. But for the year 2021 increase in the no. of cases recovery was also quite high.  
+
+
+
+
+# Correlation between  New cases and Total vaccination
+```{r}
+cor <- bangladesh %>% 
+  select(new_cases, total_vaccinations) %>% 
+  na.omit() 
+  
+ 
+ corr <- round(cor(cor), 2) %>%
+  as.data.frame() %>%
+  rownames_to_column("Variables") %>% 
+  formattable(list(area(col = 2:2) ~ color_tile("#F5B7B1", "#7DCEA0")))
+  
+corr
+
+
+```
++ The table above shows a stochastic version of whether there is any correlation between Total tests, New cases, Total vaccination, and Recovery for the year 2021
+
++ The correlation coefficient is a statistical measure of the strength of the relationship between the relative movements of variables. The values range between **-1.0 and 1.0.**
+
++ It is clearly seen that the correlation coefficient is **+0.48** which is lying between **± 0.30 and ± 0.49** and is considered having a **medium correlation.** 
+
++ Showing a medium positive correlation where as no. of vaccination increases there is a fall in the no. of new cases
+
+
+
+# A graphical representation of the above table for a clear view
+```{r}
+
+cor1 <- bangladesh %>% 
+  select(new_cases, total_vaccinations) %>% 
+  na.omit() 
+  
+ ggscatter(cor1, y = "new_cases", x = "total_vaccinations",
+          add = "reg.line", conf.int = TRUE,
+          cor.coef = TRUE, cor.method = "pearson",
+  ylab = "New cases",
+  xlab = "total vaccinations")+
+  theme_get()+
+  scale_x_continuous(labels = scales::comma) +
+  geom_smooth(method = "lm") +
+  geom_point(alpha = 0.4)
+  
+```
+
++ It is quite fascinating to see that these two variables, total vaccinations and new cases share a positive medium correlation relation.
+
++ By looking at the initial stage we see that even though vaccination drive had begun, the cases were increasing which means the impact of vaccination on the population was not that effective. In fact, when the vaccination count reached 1 core population the COVID cases were at peak. 
+
++ But, surprisingly after the vaccination count crossed 1 core the cases started to decrease as seen in the graph above showing positive relation which explains as the No. of vaccinations increased the new cases started to fall. 
+
++ Which mean vaccination has a positive impact on the new COVID cases, showing Bangladesh is currently moving to a safe zone. 
+
+# Conclusion
+
+The Pandemic of COVID-19 has hampered in Bangladesh. Hence it has been clear from the analysis that Vaccination roll out has show a positive impact slowly bringing the country back to normal and decreasing the count of new cases.
+
+# References
+[1] saifuzzaman, M. and Rahman, m., 2021. COVID-19 and Bangladesh: Situation report, comparative analysis, and case study. ScienceDirect.
+   
+
+
+

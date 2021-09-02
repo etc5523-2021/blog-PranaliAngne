@@ -1,12 +1,20 @@
-name: "Blog entry 1"
-title: "My Blog"
-description: |
-  My Blog
-output_dir: "_site"
+---
+name: "COVID-19 Analysis"
+title: "ETC5523"
 navbar:
+  search: true
+  source_url: https://github.com/etc5523-2021/blog-PranaliAngne
+
   right:
-    - text: "Home"
-      href: index.html
-    - text: "About"
-      href: about.html
-output: distill::distill_article
+    - text: "Blog1"
+      href: Blog1.html
+    - text: "Blog2"
+      href: Blog2.html
+   
+output:
+  distill::distill_article:
+    css: custom-styles.css
+---
+
+
+

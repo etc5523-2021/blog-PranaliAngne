@@ -1,5 +1,32 @@
 ---
-title: "My Blog"
-site: distill::distill_website
-listing: posts
+title: "ETC5523-Communicating with data"
+description: | 
+ An escape for the search of unknown. We hope you enjoy 
+  reading. Running a blog series.
+  cheers!
+author:
+  - name: Pranali Angne 
+    url:  https://festive-noether-2e1553.netlify.app/
+    affiliation: Monash University
+    affiliation_url: https://www.monash.edu
+date: "2021-08-31"
+output:
+  distill::distill_article:
+    self_contained: false
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# Learn more about creating blogs with Distill at:
+# https://rstudio.github.io/distill/blog.html
+
+```
+
+
+```{r, echo = F, out.width = '80%'}
+knitr::include_graphics("images/quote.jpg")
+```
+
+
+
