@@ -2,16 +2,16 @@
 
 
 This is the blog of Pranali Angne.
-The URL of this blog is https://festive-noether-2e1553.netlify.app/
+The URL of this blog is running-blogs-by-pranaliangne.netlify.app
 
 ## Blog Post 1
 
 This assessment is due Fri Sep 3 2021 11.55PM AEST.
 
-My selected country is [Bangladesh].
+My selected country is Bangladesh.
 
 The relevant blog post for this assessment is in Blog1.html
-The URL of this blog post is https://festive-noether-2e1553.netlify.app/Blog1.html
+The URL of this blog post is https://running-blogs-by-pranaliangne.netlify.app/Blog1.html
 
 - [ ] Selected a country
 - [ ] Website with R markdown 
