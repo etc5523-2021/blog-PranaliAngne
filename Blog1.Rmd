@@ -116,7 +116,7 @@ DT::datatable(statistical_description, options = list(pageLength = 4), caption =
 + All the variables in the table above show a very high "mean" and "standard deviation". Higher the mean explains that there is too much of variation and high sd indicates that the data are spread out over a large range of values. (This result has been obtained after removing the NA values)
 
 
-# Analysis: 
+# Table showing yearly trend for COVID cases and recoveries
 ```{r}
 TRY <- bangladesh %>% 
   select(total_deaths, Month, Year, total_cases, new_cases) %>% 
@@ -205,7 +205,8 @@ The Pandemic of COVID-19 has hampered in Bangladesh. Hence it has been clear fro
 
 # References
 [1] saifuzzaman, M. and Rahman, m., 2021. COVID-19 and Bangladesh: Situation report, comparative analysis, and case study. ScienceDirect.
-   
+
+[2] Ritchie, H. (2020, March 5). Bangladesh: Coronavirus Pandemic Country Profile. Our World in Data. https://ourworldindata.org/coronavirus/country/philippines  
 
 
 
