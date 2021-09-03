@@ -9,7 +9,7 @@ author:
     url: running-blogs-by-pranaliangne.netlify.app
     affiliation: Monash University
     affiliation_url: https://www.monash.edu
-date: "2021-08-31"
+date: "2021-08-30"
 output:
   distill::distill_article:
     self_contained: false

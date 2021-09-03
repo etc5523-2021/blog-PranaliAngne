@@ -3,7 +3,7 @@ title: "Coronavirus(COVID-19): Bangladesh"
 description: "Bangladesh: Bangladesh Responsive COVID-19 Vaccines for Recovery"
 author:
   - name: Pranali Angne
-date: "`r Sys.Date()`"
+date: "2021-08-30"
 output:
   distill::distill_article:
     toc: true
@@ -71,7 +71,7 @@ DT::datatable(Variable_Description, options = list(pageLength = 4), caption = 'T
 
 ```
 
-+ The data-set is an *R Built-in Data set* which is being used for constructing this analysis. It is a very large data set name "covid_data" providing all countries information out of which Bangladesh was filtered. 
++ The data-set is an *R Built-in Data set* taken from  [here](https://ourworldindata.org/coronavirus/country/philippines) which is being used for constructing this analysis. It is a very large data set name "covid_data" providing all countries information out of which Bangladesh was filtered. 
 
 + There are total 545 observations and 62 columns in the data set consists of years 2020 and 2021. Out of these 62 variables "Total cases", "Total deaths", "Total tests", "Total vaccinations", "Year", "Month", "New cases" were use to show the analysis. 
 
@@ -171,7 +171,7 @@ corr
 
 
 
-# A graphical representation of the above table for a detailed story
+## A graphical representation of the above table for a detailed story
 ```{r}
 
 cor1 <- bangladesh %>% 
@@ -208,5 +208,11 @@ The Pandemic of COVID-19 has hampered in Bangladesh. Hence it has been clear fro
 
 [2] Ritchie, H. (2020, March 5). Bangladesh: Coronavirus Pandemic Country Profile. Our World in Data. https://ourworldindata.org/coronavirus/country/philippines  
 
+[3] Kun Ren and Kenton Russell (2021). formattable: Create ‘Formattable’ Data Structures. R package version 0.2.1. https://CRAN.R-project.org/package=formattable
 
+[4] Ramnath Vaidyanathan, Kent Russell and Gareth Watts (2016). sparkline: ‘jQuery’ Sparkline ‘htmlwidget’. R package version 2.0. https://CRAN.R-project.org/package=sparkline
+
+[5] Tanaka, E., 2021. ETC5523: Communicating with Data, Monash University.
+
+[6] Yihui Xie, Joe Cheng and Xianying Tan (2021). DT: A Wrapper of the JavaScript Library ‘DataTables’. R package version 0.18. https://CRAN.R-project.org/package=DT
 
