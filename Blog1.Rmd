@@ -131,7 +131,8 @@ TRY <- bangladesh %>%
              Recover = sum(recovery),
              Recovery = spk_chr(recovery, type = "line")) %>% 
  datatable(escape = FALSE,
-            options = list(fnDrawCallback = htmlwidgets::JS('function(){HTMLWidgets.staticRender();}'))) %>% 
+            options = list(fnDrawCallback = htmlwidgets::JS('function(){HTMLWidgets.staticRender();}')),
+           caption = 'Table 3: Trend for COVID cases and recoveries ') %>% 
   spk_add_deps()
 
 TRY
