@@ -1,1 +1,392 @@
-COMING SOON....
+---
+title: "Coronavirus(COVID-19) in France: Infections, Deaths and Recoveries"
+description: ""
+author:
+  - name: Pranali Angne
+date: "2021-9-13"
+output:
+  distill::distill_article:
+    toc: true
+   
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(readr)
+library(here)
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(DT)
+library(lubridate)
+```
+
+# Introduction: 
+Europe is now considered as the epicenter of the SARS-CoV-2 pandemic, France being among the most impacted country has faced a lot disruption due to Coronavirus COVID-19. 
+
+France: WHO Coronavirus Disease (COVID-19), Dashboard With Vaccination Data, 2021)In France, from 3 January 2020 to 4:18pm CEST, 16 September 2021, there have been 67,19,404 confirmed cases of COVID-19 with 1,13,753 deaths, reported to WHO. As of 12 September 2021, a total of 9,17,07,134 vaccine doses have been administered. 
+
+```{r, echo = F, out.width = '50%', fig.pos="center"}
+knitr::include_graphics("images/paris.jpg")
+```
+
+
+
+
+```{r, fig.cap="Overview of France Covid-19 scenario"}
+#Data
+covid_data <- read_csv("data/owid-covid-data.csv") 
+
+#Filtering
+france.overview <- subset(covid_data, location =='France') %>% 
+  select(new_cases, date) %>% 
+  na.omit() 
+
+#Plot: France situation
+france_cases <- france.overview %>% 
+  filter(new_cases >=0) %>% 
+  ggplot(aes(x = date, y = new_cases)) + 
+  geom_area(stat = "identity", fill = "#6a97e6") +
+  ylab("Number of cases")+
+  xlab("Date")+
+  scale_x_date(date_breaks = "60 days",date_labels = "%d-%m-%Y")+
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle=20, hjust = 1)) 
+
+ggplotly(france_cases)
+```
+
++ The below figure 1 explains the overview of the situation for COVID-19 in France, where this blog aims to analyze and study the effects of covid-19 on covid infected patients resulting in deaths and recoveries. 
+
+```{css, echo = FALSE}
+h1,h2,h3,h4,h5{
+  color: #EF4135;
+}
+.table-striped>tbody>tr:nth-child(even)>td, 
+.table-striped>tbody>tr:nth-child(even)>th {
+   background-color: #CAE8FC;
+
+  
+```
+
+
+# Analysis 1
+```{r reading-data}
+#Data set 1
+france.1 <- read_csv("data/patient.csv") %>% 
+  select(Age, region, status)
+
+```
+
+
+# Data description: Data set-1
+```{r}
+Variable_Description <- data.frame(Variables = names(france.1),
+                          Description = c("Age of covid infected patients",
+                                          "Region in France",
+                                          "Status of the patient whether deseased, hospitalised etc"))
+
+DT::datatable(Variable_Description, caption = 'Table 1: Variable description ')%>%
+
+ formatStyle("Variables", backgroundColor="#ffa8a8") %>% formatStyle("Description", backgroundColor="#6a97e6")
+```
+
++ The data-set is  *OCHA Services: Data resposibility or COVID-19* taken from  [here](https://data.humdata.org/event/covid-19) which is being used for constructing this analysis. 
+
++ There are total 2073 observations and 20 columns in the data set consists of years 2020 and 2021. Out of these 20 variables "Age", "Region", "Status", were use to show the 1st analysis story. 
+ 
+
+
+## Story 1.1: which age group is sensitive to covid infection?
+```{r, fig.cap="Patient age group sensitive to covid infection"}
+story1.1 <- france.1 %>% 
+  select(Age, status) %>% 
+  na.omit() %>% 
+  arrange(desc(Age)) 
+
+
+new_age <- story1.1%>% 
+  mutate(
+    # Create categories
+    age_group = dplyr::case_when(
+      Age <= 14            ~ "0-14",
+      Age > 14 & Age <= 44 ~ "15-44",
+      Age > 44 & Age <= 64 ~ "45-64",
+      Age > 64             ~ "> 64"
+    ),
+    # Convert to factor
+    age_group = factor(
+      age_group,
+      level = c("0-14", "15-44","45-64", "> 64")
+    )
+  )
+
+new_age.1 <- new_age %>% 
+  group_by(age_group, Age, status) %>% 
+  count(Age) %>% 
+  rename("age_count" = n) 
+
+
+#plot
+
+color.group <- c(`0-14` = "#c90606", 
+                 `15-44` = "#3008c2",
+                 `45-64` = "#6a97e6",
+                 `> 64` = "#ffa8a8")
+
+plot1.1 <- ggplot(new_age.1, aes(x = age_group,
+                      y = age_count,
+                      fill = age_group))+
+  geom_bar(stat = "identity")+
+  xlab("Patient Age-group")+
+  ylab("Patient age count")+
+  theme_classic()+
+   theme(panel.background = element_rect(fill = "white",
+                                colour = "black",
+                                size = 0.5, linetype = "solid"))+
+  scale_fill_manual(values = color.group)
+
+ggplotly(plot1.1)
+```
++ The above figure 2 explain which age group is more sensitive to COVID-19 infection. It is clearly visible that age group greater than 64 has the most COVID-19 infected patients. 
+
++ Considering old-age as a major factor, it is quite possible that the immune system of old people is very low and due to which they have been targeted to this virus in greater number.   
+
+## Story 1.2: Which region is the emerging hot spot for COVID-19?
+```{r, fig.cap="Region maximum affected by COVID-19" }
+story1.2 <- france.1 %>% 
+  select(region) %>% 
+  na.omit() %>% 
+  group_by(region) %>% 
+  summarise(count = n()) %>% 
+  arrange(desc(count)) %>% 
+  rename("region_count" = count)
+
+c50 <- c(
+  "dodgerblue2", 
+  "#E31A1C", 
+  "green4",
+  "#6A3D9A", 
+  "#FF7F00", 
+  "#ffa8a8",
+  "gold1",
+  "skyblue2", 
+  "#FB9A99", 
+  "palegreen2", 
+  "#CAB2D6", 
+  "#FDBF6F",
+  "gray70", 
+  "khaki2", 
+  "maroon", 
+  "orchid1", 
+  "deeppink1", 
+  "blue1", 
+  "steelblue4")
+
+#plot
+ggplot(story1.2,
+       aes(x = region, y = region_count, fill = region)) +
+  geom_col() +
+ coord_polar() +
+scale_fill_manual(values = c50) +
+theme(axis.text = element_blank())+
+  theme(panel.background = element_rect(fill = "#f0f0f0",
+                                colour = "black",
+                                size = 0.5, linetype = "solid"))+
+   xlab("Region")+
+  ylab("Region count")
+  
+```
+
++ In this polar diagram it is evident that **Hauts-de-France** and **Ille-de-France** these two regions are the most emerging hot-spot for COVID-19 
+
++ Also these two region have recorded the highest number of deaths in France. Hauts-de-France is the northernmost region of France showing most affected region because of coronavirus.
+
++ Along with that **Ille-de-France**, this region is made up of eight administrative departments. It surrounds the nation’s famed capital, Paris, an international center for culture and cuisine with chic cafes and formal gardens. Which mean it was the prime location where COVID was at peak. 
+
+
+
+## Story 1.3: Is there any trend or a relation between patients status and patient age to COVID-19 infection?
+```{r, fig.cap="Trend or a relation between patients status and age to COVID-19 infection"}
+
+
+story1.3 <- new_age.1 %>% 
+  select(Age, status, age_group) %>% 
+  na.omit() %>% 
+  group_by(status, age_group) %>% 
+  arrange(desc(Age, age_group,age_count)) %>% 
+  count(Age) %>% 
+  rename("Age_count" = n)
+
+color.group <- c(deceased = "#c90606",
+                 `home isolation` = "#3008c2",
+                 hospital = "#6a97e6",
+                 released = "#ffa8a8")
+
+
+#plot
+plot1.3 <- ggplot(story1.3, aes(x = age_group, y = Age_count, fill = status)) + 
+  geom_bar(stat = "identity") +
+  facet_wrap(~status, ncol = 1, scales = "free_y")+
+  ylab("Age count")+
+  xlab("Patient Age")+
+  theme_minimal()+
+  theme(axis.text.x = element_text(hjust = 1)) +
+  scale_fill_manual(values = color.group)
+
+ggplotly(plot1.3)
+  
+ 
+```
++ Figure 4 shows how Age has an impact on the status of COVID-19 patients. This is a facet wraps depicting four status of these COVID patients. 
+
++ It has been observed that age "above 64" has maximum deceased patients, because of the old-age factor as mentioned above. 
+
++ For **home isolation**, age group lies between "15-44" and "above 64" as teen and adults have done maximum home quarantine. 
+
++ Coming to patients being hospitalised, from all age group patients have been hospitalised.
+
++ As it is so evident that those patients who are released are only rom age group "15-44" and "45-64". Above 64 none of the patients could make it from the COVID-19 infection. 
+
++ Thus, it can be concluded that patient who's age is above 64 have been affected greater compared to other age groups.  
+
+# Analysis 2
+```{r, reading dataset-2}
+# Data-set 1
+covid_data <- read_csv("data/owid-covid-data.csv") 
+
+#Filtering
+france.2 <- subset(covid_data, location =='France') %>% 
+  mutate(Year = format(date, "%Y"), Month = format(date, "%m")) %>% 
+  select(new_cases, stringency_index, Year, Month)
+
+```
+
+
+# Data description: Data set-2
+```{r}
+Variable_Description <- data.frame(Variables = names(france.2),
+                          Description = c("New cases count",
+                                          "Stringrncy Index",
+                                          "Year",
+                                          "Month"))
+
+DT::datatable(Variable_Description, caption = 'Table 2: Variable description ')%>%
+formatStyle("Variables", backgroundColor="#ffa8a8") %>% formatStyle("Description", backgroundColor="#6a97e6")
+```
+
++ The data-set is from *Our World in Data* taken from  [here](https://ourworldindata.org/coronavirus/country/france) which is being used for constructing this analysis. It is a very large data set name "covid_data" providing all countries information out of which France was filtered. 
+
++ There are total 598 observations and 62 columns in the data set consists of years 2020 and 2021. Out of these 62 variables "New cases", "Stringency Index", "Year", were use to show the 2nd analysis story. 
+ 
+
+## Story 2.1: Regression summary on No. of covid cases and stringency index. 
+```{r, fig.cap="Regression summary on No. of covid cases and stringency index"}
+cor2 <- france.2 %>% 
+  select(stringency_index, new_cases) %>% 
+  na.omit()
+regression <- lm(new_cases~stringency_index, data=cor2)
+summary(regression)
+par(bg = 'white')
+par(mfrow=c(2,2))
+plot(regression, col = "#6c8b97", pch = 10, )
+
+
+```
+
++ The table above shows a stochastic version of whether there is any correlation between stringency index and new_cases for the year 2020 and 20201
+
++ The correlation coefficient is a statistical measure of the strength of the relationship between the relative movements of variables. The values range between **-1.0 and 1.0.**
+
++ It is surprising that stringency index and new cases have a very low correlation which is **+O.04**. Showing both factors do not affect each of the variable. 
+
++ The first plot is the residual plot, a comparison of the residuals of our model against the fitted values produced by our model, and is the most important plot because it can tell us about trends in our residuals, evidence of heteroskedasticity and possible outliers.
+
++ The next plot is the QQ-plot. Though most of the points seem to fall on the line which indicates that our residuals come from a normal distribution, there are some points that stray from the line in the lower and upper quantiles of the plot. It is possible that these points do not come from a normal distribution, but most of our points seem to come from a normal distribution so there is not a lot to worry about here.
+
++ The third plot created is the scale-location plot. This plot is similar to the residual plot, but uses the square root of the standardized residuals instead of the residuals themselves. 
+
++ Finally, we see the leverage plot. This plot graphs the standardized residuals against their leverage. It also includes the Cook’s distance boundaries. Any point outside of those boundaries would be an outlier in the x direction. Since we can even see the boundaries on our plot, we can conclude that we have  outliers.
+
+
+
+
+## Story 2.2: How has stringency index affected the covid-19 scenario? A graphical representation.
+```{r, fig.cap="stringency index affected the covid-19 scenario"}
+
+color.group <- c(`01` = '#B44C4B',
+                 `02` = '#6C976C',
+                 `03` = '#e3cd8f', 
+                 `04` = '#d8e38f',
+                 `05` = '#8fcae3',
+                 `06` = '#a08fe3',
+                 `07` = '#e38fd1',
+                 `08` = '#e38fa7',
+                 `09` = '#523c34',
+                 `10` = '#808080',
+                 `11` = '#fcf98d',
+                 `12` = '#8dfcac')
+
+cor1 <- france.2 %>% 
+  select(Year, Month, stringency_index, new_cases) %>% 
+  na.omit() %>% 
+  group_by(Month, stringency_index) %>% 
+  summarise(new_cases = sum(new_cases)) %>% 
+  mutate(log = log(new_cases)) %>% 
+  ggplot(aes(x = log , y= (stringency_index), fill = Month)) +
+    geom_boxplot(draw_quantiles = c(0.25, 0.5, 0.75), 
+                ) +
+  ylab("Stringency Index") +
+  xlab("New cases (log)") + 
+  theme_linedraw()+
+   ggtitle("Stringency Index and New cases") +
+   theme(panel.background = element_rect(fill = "white",
+                                colour = "black",
+                                size = 0.5, linetype = "solid"))+
+  scale_fill_manual(values = color.group)
+
+cor1
+
+```
+
++ The current ongoing pandemic Coronavirus has affected millions of countries in various ways. To slow the spread of this virus, countries around the world are implementing strict measures, from national lock downs to school closures.
+
++ To calculate the intensity of these strict measures, the Oxford Coronavirus Government Response Tracker (OxCGRT) project came up with a *Stringency Index*. Stringency Index is a composite measure of nine of the response metrics.
+
++ The nine metrics used to calculate the Stringency Index are: restrictions on public gatherings; restrictions on internal movements; cancellation of public events; closures of public transport; stay-at-home requirements; school closures; international travel controls; workplace closures; and public information campaigns.
+
++ The index on any given day is calculated as the mean score of the nine metrics, each taking a value between 0 and 100. In this blog, we will be discussing about the covid' 19 Stringency Index in the France. 
+
++ As discussed above, the stringency index on any given day is calculated as the mean score of the nine metrics, each taking a value between 0 and 100. A higher score (i.e. 100 or close to 100) indicates a stricter response where as a low score indicates some ease in the policies and restrictions overall. 
+
+# Conclusion:
+
+Story 1: 
+
++ From the analysis one it was very evident and also has a interesting finding which is most of the deaths of patients were from the age above 60 years old. Resulting older people getting most affected from the COVID-19 infection. 
+
+Story 2:
+
++ Here, it is surprising that stringency index and new cases had no correlation. Despite of increase in the restrictions there were still increase in the number of new cases. 
+
+
+# References:
+
+[1] Massonnaud, C., Roux, J., & Crépey, P. (2020). COVID-19: Forecasting short term hospital needs in France. medrxiv.
+
+[2] Covid19.who.int. 2021. France: WHO Coronavirus Disease (COVID-19) Dashboard With Vaccination Data. [online] Available at: <https://covid19.who.int/region/euro/country/fr> [Accessed 16 September 2021].
+
+[3] C. Sievert. Interactive Web-Based Data Visualization with R, plotly, and shiny. Chapman
+  and Hall/CRC Florida, 2020.
+  
+[4] H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
+
+[5] Yihui Xie, Joe Cheng and Xianying Tan (2021). DT: A Wrapper of the JavaScript Library
+  'DataTables'. R package version 0.18. https://CRAN.R-project.org/package=DT
+  
+[6] Rpubs.com. 2018. RPubs - Multiple Linear Regression R Guide. [online] Available at: <https://rpubs.com/bensonsyd/385183> [Accessed 16 September 2021].
+
+
+
+
