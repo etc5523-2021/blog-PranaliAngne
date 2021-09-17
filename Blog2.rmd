@@ -25,7 +25,8 @@ library(lubridate)
 # Introduction: 
 Europe is now considered as the epicenter of the SARS-CoV-2 pandemic, France being among the most impacted country has faced a lot disruption due to Coronavirus COVID-19. 
 
-France: WHO Coronavirus Disease (COVID-19), Dashboard With Vaccination Data, 2021)In France, from 3 January 2020 to 4:18pm CEST, 16 September 2021, there have been 67,19,404 confirmed cases of COVID-19 with 1,13,753 deaths, reported to WHO. As of 12 September 2021, a total of 9,17,07,134 vaccine doses have been administered. 
+(France: WHO Coronavirus Disease (COVID-19), Dashboard With Vaccination Data, 2021)In France, from 3 January 2020 to 4:18pm CEST, 16 September 2021, there have been 67,19,404 confirmed cases of COVID-19 with 1,13,753 deaths, reported to WHO. As of 12 September 2021, a total of 9,17,07,134 vaccine doses have been administered.
+
 
 ```{r, echo = F, out.width = '50%', fig.pos="center"}
 knitr::include_graphics("images/paris.jpg")
@@ -92,7 +93,7 @@ DT::datatable(Variable_Description, caption = 'Table 1: Variable description ')%
  formatStyle("Variables", backgroundColor="#ffa8a8") %>% formatStyle("Description", backgroundColor="#6a97e6")
 ```
 
-+ The data-set is  *OCHA Services: Data resposibility or COVID-19* taken from  [here](https://data.humdata.org/event/covid-19) which is being used for constructing this analysis. 
++ The data-set is  *OCHA Services: Data responsibility or COVID-19* taken from  [here](https://data.humdata.org/event/covid-19) which is being used for constructing this analysis. 
 
 + There are total 2073 observations and 20 columns in the data set consists of years 2020 and 2021. Out of these 20 variables "Age", "Region", "Status", were use to show the 1st analysis story. 
  
@@ -243,11 +244,11 @@ ggplotly(plot1.3)
 
 + It has been observed that age "above 64" has maximum deceased patients, because of the old-age factor as mentioned above. 
 
-+ For **home isolation**, age group lies between "15-44" and "above 64" as teen and adults have done maximum home quarantine. 
++ For home isolation, age group lies between "15-44" and "above 64" as teen and adults have done maximum home quarantine. 
 
 + Coming to patients being hospitalised, from all age group patients have been hospitalised.
 
-+ As it is so evident that those patients who are released are only rom age group "15-44" and "45-64". Above 64 none of the patients could make it from the COVID-19 infection. 
++ As it is so evident that those patients who are released, are only of age group "15-44" and "45-64". Above 64 none of the patients could make it from the COVID-19 infection. 
 
 + Thus, it can be concluded that patient who's age is above 64 have been affected greater compared to other age groups.  
 
