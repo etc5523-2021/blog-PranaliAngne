@@ -234,7 +234,9 @@ plot1.3 <- ggplot(story1.3, aes(x = age_group, y = Age_count, fill = status)) +
   xlab("Patient Age")+
   theme_minimal()+
   theme(axis.text.x = element_text(hjust = 1)) +
-  scale_fill_manual(values = color.group)
+  scale_fill_manual(values = color.group) +
+  theme(legend.position="none")
+
 
 ggplotly(plot1.3)
   
