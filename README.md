@@ -28,7 +28,6 @@ The URL of this blog post is https://running-blogs-by-pranaliangne.netlify.app/B
 This assessment is due Fri Sep 17 2021 11.55PM AEST.
 
 My selected country is [France.]
-The URL of this blog is [https://running-blogs-by-pranaliangne.netlify.app]
 The relevant blog post for this assessment is in [Blog2.html]
 The URL of this blog post is https://running-blogs-by-pranaliangne.netlify.app/Blog2.html
 

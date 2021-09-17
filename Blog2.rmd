@@ -287,10 +287,12 @@ cor2 <- france.2 %>%
   select(stringency_index, new_cases) %>% 
   na.omit()
 regression <- lm(new_cases~stringency_index, data=cor2)
-summary(regression)
 par(bg = 'white')
 par(mfrow=c(2,2))
 plot(regression, col = "#6c8b97", pch = 10, )
+
+#summary
+summary(regression)
 
 
 ```

@@ -1,29 +1,17 @@
 
-..navbar{
-  background-color: #E74C3C;
-  color: #FFFFFF;
+distill-site-nav {
+  background-color: #013213   ;
+  font-size: 15px;
 }
-
-h1, h2, h3, h4{
-    font-style: monospace;
-    color: #A93226;
-}
-
-mark{
-  background: #eb6864;
-  color:#FFFFFF ;
-  font-style: italic;
-}
-
-
-.table-striped>tbody>tr:nth-child(even)>td, 
-.table-striped>tbody>tr:nth-child(even)>th {
-   background-color: #F5B7B1;
- }
-
 
 .d-title {
   background-image: url("images/100.jpg");
   background-repeat: no-repeat;
   background-position: right;
+}
+
+h1,h2, h3, h4, h5, h6 {
+  font-family: 'Georgia', serif;
+  font-weight: 700;
+  color: #B03A2E;
 }
